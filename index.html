@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FFF0F5;
+    --cream: #FFFFFF;
+    --pink: #FFAADA;
+    --pink-soft: #FFF0F5;
+    --pink-dark: #E288B9;
+    --mint: #A7E6FF;
+    --mint-soft: #EAF8FF;
+    --butter: #FFF5BF;
+    --text-main: #5C525A;
+    --text-soft: #9A8F97;
+    --white: #FFFFFF;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background: #FFF0F5;
+    font-family: 'Sarabun', sans-serif;
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+  }
+
+  /* shop logo + name */
+  .outer-shop-header{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    margin-bottom: 24px;
+    width: 100%;
+    max-width: 375px;
+  }
+  .logo-slot{
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #FFAADA;
+    box-shadow: 0 4px 12px rgba(255, 170, 218, 0.3);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    cursor:pointer;
+    flex-shrink: 0;
+  }
+  .logo-slot img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    display:block;
+  }
+  .logo-slot.has-image img{ display:block; }
+  .logo-slot.has-image .logo-placeholder{ display:none; }
+  .logo-slot .logo-placeholder{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    color: var(--text-soft);
+  }
+  .logo-slot .logo-placeholder svg{ width:20px; height:20px; }
+  .logo-slot .logo-placeholder span{
+    font-family:'Mali', sans-serif;
+    font-size: 8.5px;
+    font-weight:600;
+  }
+  #logoInput{ display:none; }
+
+  .shop-title-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .shop-name{
+    font-family:'Mali', sans-serif;
+    font-weight:700;
+    font-size: 26px;
+    color: #5C525A;
+    text-align:left;
+    letter-spacing: 0.5px;
+    position: relative;
+    line-height: 1.1;
+  }
+  .shop-name::after{
+    content: "🐾";
+    font-size: 16px;
+    vertical-align: middle;
+    margin-left: 6px;
+  }
+
+  .payment-subtitle{
+    font-family:'Mali', sans-serif;
+    font-weight:600;
+    font-size: 15px;
+    color: #E288B9;
+    margin-top: 2px;
+  }
+
+  /* contact text */
+  .contact-title-text{
+    font-family: 'Mali', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #E288B9;
+    margin-top: 20px;
+    margin-bottom: -16px;
+    text-align: center;
+  }
+  .thank-you-text{
+    font-family: 'Mali', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #5C525A;
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  /* contact circles */
+  .outer-contact-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .contact-circle{
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.15s ease;
+    border: 2px solid #FFFFFF;
+  }
+  .contact-circle:hover{ transform: translateY(-2px); }
+  .contact-circle svg{ width:20px; height:20px; }
+  .contact-circle.facebook{ background: #A7E6FF; }
+  .contact-circle.line{ background: #FFAADA; }
+
+  /* iPhone 11 mockup (Minimal Pastel) */
+  .phone-frame{
+    position: relative;
+    width: 375px;
+    max-width: 92vw;
+    height: 812px;
+    background: #FFFFFF;
+    border-radius: 44px;
+    padding: 10px;
+    box-shadow: 0 20px 40px rgba(255, 170, 218, 0.15);
+    border: 1px solid #FFE4F0;
+  }
+  .phone-frame::before{
+    content:"";
+    position:absolute;
+    inset: 4px;
+    border-radius: 40px;
+    border: 1px solid rgba(0,0,0,0.02);
+    pointer-events:none;
+  }
+  
+  /* iPhone 11 Notch */
+  .iphone-11-notch{
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 28px;
+    background: #FFFFFF;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    z-index: 6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+  }
+  .iphone-11-notch::before{
+    content: "";
+    width: 45px;
+    height: 4px;
+    background: #FFE4F0;
+    border-radius: 2px;
+  }
+  .iphone-11-notch::after{
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: #FFAADA;
+    border-radius: 50%;
+  }
+
+  .side-btn{ position:absolute; background: #FFE4F0; }
+  .side-btn.mute{ left:-3px; top: 115px; width:3px; height: 26px; border-radius: 2px 0 0 2px; }
+  .side-btn.vol-up{ left:-3px; top: 160px; width:3px; height: 50px; border-radius: 2px 0 0 2px; }
+  .side-btn.vol-down{ left:-3px; top: 225px; width:3px; height: 50px; border-radius: 2px 0 0 2px; }
+  .side-btn.power{ right:-3px; top: 170px; width:3px; height: 75px; border-radius: 0 2px 2px 0; }
+
+  .phone-screen{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 34px;
+    background: #FFFDF9;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display:flex;
+    justify-content:center;
+    padding: 38px 14px 20px;
+  }
+  .phone-screen::-webkit-scrollbar{ display:none; }
+
+  @media (max-width: 380px){
+    .phone-frame{ width: 92vw; border-radius: 40px; padding: 8px; height: 740px; }
+    .phone-screen{ border-radius: 30px; padding-top: 34px; }
+    .iphone-11-notch{ width: 170px; height: 24px; }
+  }
+
+  .stickers{
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .sticker{
+    position: absolute;
+    opacity: 0.7;
+  }
+
+  .card{
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    background: #FFFFFF;
+    border-radius: 28px;
+    padding: 22px 18px 18px;
+    box-shadow: 0 10px 25px rgba(255, 170, 218, 0.1);
+    border: 1px solid #FFE4F0;
+  }
+
+  /* barcode */
+  .barcode-box{
+    background: #FFFDF9;
+    border-radius: 16px;
+    padding: 12px 16px 8px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    border: 1px dashed #FFAADA;
+    margin-top: 14px;
+  }
+  .barcode-box svg{ width: 100%; height: 46px; }
+  .barcode-label{
+    font-family:'Mali', sans-serif;
+    font-size: 11px;
+    color: #9A8F97;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  /* highlight text */
+  .highlight-text{
+    text-align: center;
+    margin: 0 0 16px;
+    font-family:'Mali', sans-serif;
+    font-weight:700;
+    font-size: 14.5px;
+    color: #5C525A;
+    line-height: 1.4;
+  }
+  .highlight-text .pink-name{
+    color: #E288B9;
+  }
+  .highlight-text .sub-note{
+    display: block;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #9A8F97;
+    margin-top: 3px;
+  }
+
+  /* photo slot */
+  .photo-slot{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-width: 230px;
+    margin: 0 auto 16px;
+    border-radius: 20px;
+    background: #FFF0F5;
+    border: 2px dashed #FFAADA;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    overflow:hidden;
+    cursor:pointer;
+  }
+  .photo-slot img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    display:block;
+  }
+  .photo-slot.has-image img{ display:block; }
+  .photo-slot.has-image .placeholder{ display:none; }
+  .photo-slot .placeholder{
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    color: #E288B9;
+  }
+  .photo-slot .placeholder svg{ width:42px; height:42px; }
+  .photo-slot .placeholder span{
+    font-family:'Mali', sans-serif;
+    font-size: 12.5px;
+    font-weight:600;
+  }
+  .photo-slot .dims{
+    font-size: 10.5px;
+    color: #9A8F97;
+  }
+  #fileInput{ display:none; }
+
+  /* section title */
+  .section-title{
+    font-family:'Mali', sans-serif;
+    font-weight:600;
+    font-size: 14px;
+    color: #5C525A;
+    margin: 4px 0 10px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .section-title svg{ width:16px; height:16px; }
+
+  /* wallet note */
+  .wallet-note{
+    font-size: 11px;
+    color: #9A8F97;
+    margin: 10px 0 4px;
+    font-family: 'Sarabun', sans-serif;
+  }
+  .wallet-note .pink-fee{
+    color: #E288B9;
+    font-weight: 600;
+  }
+
+  /* payment rows */
+  .pay-row{
+    background: #FFFDF9;
+    border-radius: 14px;
+    padding: 10px 12px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom: 8px;
+    border: 1px solid #FFE4F0;
+  }
+  .pay-row.wallet{ margin-bottom: 4px; }
+
+  .pay-info{ min-width:0; }
+  .pay-info .bank-name{
+    font-size: 11.5px;
+    color: #9A8F97;
+    margin-bottom: 1px;
+  }
+  .pay-info .acc-number{
+    font-family:'Mali', sans-serif;
+    font-weight:700;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: #5C525A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .copy-btn{
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    background: #FFAADA;
+    border: none;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-family:'Mali', sans-serif;
+    font-weight:600;
+    font-size: 12px;
+    color: #FFFFFF;
+    cursor:pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .copy-btn svg{ width:13px; height:13px; }
+  .copy-btn:hover{ transform: translateY(-1px); background: #E288B9; color: #FFFFFF; }
+  .copy-btn:active{ transform: scale(0.95); }
+  .copy-btn.copied{ background: #A7E6FF; color: #FFFFFF; }
+
+  /* warning */
+  .warning{
+    display:flex;
+    align-items:flex-start;
+    gap:6px;
+    justify-content:center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #FFAADA;
+  }
+  .warning svg{ width:12px; height:12px; flex-shrink:0; margin-top:1px; }
+  .warning p{
+    font-size: 10.5px;
+    color: #9A8F97;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 380px){
+    .card{ padding: 18px 12px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ส่วนหัวร้านค้า -->
+<div class="outer-shop-header">
+  <label class="logo-slot has-image" id="logoSlot" for="logoInput">
+    <img id="logoPreview" src="ไม่มีชื่อ 113_20260320180353.png" alt="โลโก้ร้าน" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="logo-placeholder" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M4 8l2-4h12l2 4" stroke="#E288B9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="3" y="8" width="18" height="12" rx="3" stroke="#E288B9" stroke-width="1.6"/>
+        <circle cx="12" cy="14" r="3.2" stroke="#E288B9" stroke-width="1.6"/>
+      </svg>
+      <span>โลโก้ร้าน</span>
+    </div>
+  </label>
+  <input type="file" id="logoInput" accept="image/*">
+  <div class="shop-title-container">
+    <h2 class="shop-name">Yoneko Store</h2>
+    <span class="payment-subtitle">Payment</span>
+  </div>
+</div>
+
+<!-- iPhone 11 Mockup -->
+<div class="phone-frame">
+  <div class="iphone-11-notch"></div>
+  <div class="side-btn mute"></div>
+  <div class="side-btn vol-up"></div>
+  <div class="side-btn vol-down"></div>
+  <div class="side-btn power"></div>
+
+  <div class="phone-screen">
+
+<div class="stickers">
+  <!-- cat 1 -->
+  <svg class="sticker" style="top:6%; left:4%; width:52px; transform:rotate(-12deg);" viewBox="0 0 100 100">
+    <ellipse cx="50" cy="60" rx="32" ry="28" fill="#FFAADA"/>
+    <path d="M22 38 L30 12 L44 34 Z" fill="#FFAADA"/>
+    <path d="M78 38 L70 12 L56 34 Z" fill="#FFAADA"/>
+    <path d="M25 36 L31 20 L40 34 Z" fill="#FFF0F5"/>
+    <path d="M75 36 L69 20 L60 34 Z" fill="#FFF0F5"/>
+    <circle cx="38" cy="58" r="4" fill="#5C525A"/>
+    <circle cx="62" cy="58" r="4" fill="#5C525A"/>
+    <path d="M45 68 Q50 72 55 68" stroke="#5C525A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="26" cy="66" r="5" fill="#A7E6FF" opacity="0.8"/>
+    <circle cx="74" cy="66" r="5" fill="#A7E6FF" opacity="0.8"/>
+  </svg>
+
+  <!-- cat 2 -->
+  <svg class="sticker" style="bottom:8%; right:5%; width:58px; transform:rotate(10deg);" viewBox="0 0 100 100">
+    <ellipse cx="50" cy="62" rx="30" ry="26" fill="#A7E6FF"/>
+    <path d="M24 40 L32 16 L46 36 Z" fill="#A7E6FF"/>
+    <path d="M76 40 L68 16 L54 36 Z" fill="#A7E6FF"/>
+    <circle cx="40" cy="60" r="3.5" fill="#5C525A"/>
+    <circle cx="60" cy="60" r="3.5" fill="#5C525A"/>
+    <path d="M47 70 Q50 73 53 70" stroke="#5C525A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  </svg>
+
+  <!-- star -->
+  <svg class="sticker" style="top:16%; right:10%; width:20px;" viewBox="0 0 24 24">
+    <path d="M12 2 L14.5 9 L22 9.5 L16 14.5 L18 22 L12 17.5 L6 22 L8 14.5 L2 9.5 L9.5 9 Z" fill="#FFF5BF"/>
+  </svg>
+
+  <!-- heart -->
+  <svg class="sticker" style="top:32%; left:6%; width:18px; transform:rotate(-15deg);" viewBox="0 0 24 24">
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#FFAADA"/>
+  </svg>
+</div>
+
+<div class="card">
+
+  <label class="photo-slot has-image" id="photoSlot" for="fileInput">
+    <!-- ใส่ URL รูปตัวอย่างเพื่อป้องกันรูปแตก -->
+    <img id="photoPreview" src="yone_20260915150512.png" alt="รูปสแกนคิวอาร์โค้ด" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="placeholder" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="5" width="18" height="15" rx="3" stroke="#E288B9" stroke-width="1.6"/>
+        <circle cx="8.5" cy="10" r="1.6" fill="#E288B9"/>
+        <path d="M3 17 L9 12 L13 15 L17 10.5 L21 14.5" stroke="#E288B9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>แตะเพื่อใส่รูป</span>
+      <span class="dims">2000 × 2000 px</span>
+    </div>
+  </label>
+  <input type="file" id="fileInput" accept="image/*">
+
+  <p class="highlight-text">
+    โอนชื่อบัญชี <span class="pink-name">สิรภพ ส.</span> เท่านั้น!!
+    <span class="sub-note">สามารถบันทึกรูปแสกนได้เลยน้า</span>
+  </p>
+
+  <div class="section-title">
+    <svg viewBox="0 0 24 24" fill="none">
+      <rect x="2" y="6" width="20" height="13" rx="2.5" stroke="#FFAADA" stroke-width="1.6"/>
+      <line x1="2" y1="10" x2="22" y2="10" stroke="#FFAADA" stroke-width="1.6"/>
+      <line x1="5" y1="15" x2="10" y2="15" stroke="#FFAADA" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    บัญชีธนาคาร &amp; วอลเล็ต
+  </div>
+
+  <div class="pay-row" data-copy="162-1-98934-7">
+    <div class="pay-info">
+      <div class="bank-name">ธนาคารกสิกรไทย</div>
+      <div class="acc-number">162-1-98934-7</div>
+    </div>
+    <button class="copy-btn" type="button">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="1.8"/></svg>
+      คัดลอก
+    </button>
+  </div>
+
+  <p class="wallet-note">สำหรับลูกค้าที่ชำระเงินผ่านวอเลท (<span class="pink-fee">+20บาท</span>)</p>
+
+  <div class="pay-row wallet" data-copy="0805613186">
+    <div class="pay-info">
+      <div class="bank-name">TrueMoney Wallet</div>
+      <div class="acc-number">080-561-3186</div>
+    </div>
+    <button class="copy-btn" type="button">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="1.8"/></svg>
+      คัดลอก
+    </button>
+  </div>
+
+  <div class="warning">
+    <svg viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="9.5" stroke="#E288B9" stroke-width="1.5"/>
+      <line x1="12" y1="8" x2="12" y2="13" stroke="#E288B9" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="12" cy="16" r="0.9" fill="#E288B9"/>
+    </svg>
+    <p>กรุณาเช็คชื่อบัญชีและเลขบัญชีทุกครั้งก่อนโอน</p>
+  </div>
+
+  <div class="barcode-box">
+    <svg viewBox="0 0 220 50" preserveAspectRatio="none">
+      <rect x="0" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="4" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="8" y="0" width="3" height="50" fill="#5C525A"/>
+      <rect x="14" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="18" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="23" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="27" y="0" width="4" height="50" fill="#5C525A"/>
+      <rect x="34" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="38" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="43" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="47" y="0" width="3" height="50" fill="#5C525A"/>
+      <rect x="53" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="57" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="62" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="66" y="0" width="4" height="50" fill="#5C525A"/>
+      <rect x="73" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="77" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="82" y="0" width="3" height="50" fill="#5C525A"/>
+      <rect x="88" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="92" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="97" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="101" y="0" width="4" height="50" fill="#5C525A"/>
+      <rect x="108" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="112" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="117" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="121" y="0" width="3" height="50" fill="#5C525A"/>
+      <rect x="127" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="131" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="136" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="140" y="0" width="4" height="50" fill="#5C525A"/>
+      <rect x="147" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="151" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="156" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="160" y="0" width="3" height="50" fill="#5C525A"/>
+      <rect x="166" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="170" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="175" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="179" y="0" width="4" height="50" fill="#5C525A"/>
+      <rect x="186" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="190" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="195" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="199" y="0" width="3" height="50" fill="#5C525A"/>
+      <rect x="205" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="209" y="0" width="2" height="50" fill="#5C525A"/>
+      <rect x="214" y="0" width="1" height="50" fill="#5C525A"/>
+      <rect x="217" y="0" width="2" height="50" fill="#5C525A"/>
+    </svg>
+    <span class="barcode-label">8 8 8 8 8 8 8 8 8 8 8 8 8</span>
+  </div>
+
+</div>
+
+  </div>
+</div>
+
+<!-- ช่องทางการติดต่อ -->
+<div class="contact-title-text">contact us</div>
+<div class="outer-contact-row">
+  <a class="contact-circle facebook" href="https://www.facebook.com/peony.butter.2024?" target="_blank" aria-label="Facebook" title="Facebook">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M15 8.5h2V5.4c-.35-.05-1.54-.15-2.94-.15-2.9 0-4.9 1.77-4.9 5.02V13H6.5v3.5H9.16V23h3.6v-6.5h2.78l.44-3.5h-3.22v-2.36c0-1.01.28-1.7 1.74-1.7Z" fill="#ffffff"/></svg>
+  </a>
+  <a class="contact-circle line" href="https://lin.ee/pYtzazs" target="_blank" aria-label="LINE" title="LINE">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 4C7 4 3 7.2 3 11.2c0 3.4 3.1 6.2 7.2 6.9-.3 1.1-.3 1.2-.3 1.7 0 .3.1.4.4.4.3 0 1-.4 2.1-1.2 1.1-.8 2-1.6 2.4-2C18 15.8 21 13.8 21 11.2 21 7.2 17 4 12 4Z" fill="#ffffff"/></svg>
+  </a>
+</div>
+<div class="thank-you-text">ขอบคุณที่ใช้บริการ Yoneko 💖</div>
+
+<script>
+  // logo upload preview
+  const logoInput = document.getElementById('logoInput');
+  const logoSlot = document.getElementById('logoSlot');
+  const logoPreview = document.getElementById('logoPreview');
+
+  logoInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      logoPreview.style.display = 'block';
+      logoPreview.src = ev.target.result;
+      logoSlot.classList.add('has-image');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // photo upload preview
+  const fileInput = document.getElementById('fileInput');
+  const photoSlot = document.getElementById('photoSlot');
+  const photoPreview = document.getElementById('photoPreview');
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      photoPreview.style.display = 'block';
+      photoPreview.src = ev.target.result;
+      photoSlot.classList.add('has-image');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // copy buttons
+  document.querySelectorAll('.pay-row').forEach(row => {
+    const btn = row.querySelector('.copy-btn');
+    const text = row.getAttribute('data-copy') || row.querySelector('.acc-number').textContent.trim();
+    btn.addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(err){
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      const original = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> คัดลอกแล้ว`;
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = original;
+      }, 1500);
+    });
+  });
+</script>
+
+</body>
+</html>
